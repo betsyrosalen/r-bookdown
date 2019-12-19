@@ -121,597 +121,647 @@ $(document).ready(function () {
 </div>
 
 
-<div id="stringr" class="section level1">
-<h1>stringr</h1>
-<pre class="r"><code>library(stringr)</code></pre>
-<div id="pattern-matching" class="section level3">
-<h3>Pattern matching</h3>
-<div id="str_count" class="section level4">
-<h4>str_count</h4>
-<p>Count the number of matches in a string</p>
-<p>Examples</p>
-<pre class="r"><code>fruit &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;, &quot;pineapple&quot;)
-str_count(fruit, &quot;a&quot;)</code></pre>
-<pre><code>## [1] 1 3 1 1</code></pre>
-<pre class="r"><code>str_count(fruit, &quot;p&quot;)</code></pre>
-<pre><code>## [1] 2 0 1 3</code></pre>
-<pre class="r"><code>str_count(fruit, &quot;e&quot;)</code></pre>
-<pre><code>## [1] 1 0 1 2</code></pre>
-<pre class="r"><code>str_count(fruit, c(&quot;a&quot;, &quot;b&quot;, &quot;p&quot;, &quot;p&quot;))</code></pre>
-<pre><code>## [1] 1 1 1 3</code></pre>
-<pre class="r"><code>str_count(c(&quot;a.&quot;, &quot;...&quot;, &quot;.a.a&quot;), &quot;.&quot;)</code></pre>
-<pre><code>## [1] 2 3 4</code></pre>
-<pre class="r"><code>str_count(c(&quot;a.&quot;, &quot;...&quot;, &quot;.a.a&quot;), fixed(&quot;.&quot;))</code></pre>
-<pre><code>## [1] 1 3 2</code></pre>
-</div>
-<div id="str_detect" class="section level4">
-<h4>str_detect</h4>
-<p>Detect the presence or absence of a pattern in a string.</p>
-<p>Examples</p>
-<pre class="r"><code>fruit &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;, &quot;pinapple&quot;)
-str_detect(fruit, &quot;a&quot;)</code></pre>
-<pre><code>## [1] TRUE TRUE TRUE TRUE</code></pre>
-<pre class="r"><code>str_detect(fruit, &quot;^a&quot;)</code></pre>
-<pre><code>## [1]  TRUE FALSE FALSE FALSE</code></pre>
-<pre class="r"><code>str_detect(fruit, &quot;a$&quot;)</code></pre>
-<pre><code>## [1] FALSE  TRUE FALSE FALSE</code></pre>
-<pre class="r"><code>str_detect(fruit, &quot;b&quot;)</code></pre>
-<pre><code>## [1] FALSE  TRUE FALSE FALSE</code></pre>
-<pre class="r"><code>str_detect(fruit, &quot;[aeiou]&quot;)</code></pre>
-<pre><code>## [1] TRUE TRUE TRUE TRUE</code></pre>
-<pre class="r"><code># Also vectorised over pattern
-str_detect(&quot;aecfg&quot;, letters)</code></pre>
-<pre><code>##  [1]  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE
-## [12] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [23] FALSE FALSE FALSE FALSE</code></pre>
-</div>
-<div id="str_extract" class="section level4">
-<h4>str_extract</h4>
-<p>Extract matching patterns from a string.</p>
-<p>Examples:</p>
-<pre class="r"><code>shopping_list &lt;- c(&quot;apples x4&quot;, &quot;bag of flour&quot;, &quot;bag of sugar&quot;, &quot;milk x2&quot;)
-str_extract(shopping_list, &quot;\\d&quot;)</code></pre>
-<pre><code>## [1] &quot;4&quot; NA  NA  &quot;2&quot;</code></pre>
-<pre class="r"><code>str_extract(shopping_list, &quot;[a-z]+&quot;)</code></pre>
-<pre><code>## [1] &quot;apples&quot; &quot;bag&quot;    &quot;bag&quot;    &quot;milk&quot;</code></pre>
-<pre class="r"><code>str_extract(shopping_list, &quot;[a-z]{1,4}&quot;)</code></pre>
-<pre><code>## [1] &quot;appl&quot; &quot;bag&quot;  &quot;bag&quot;  &quot;milk&quot;</code></pre>
-<pre class="r"><code>str_extract(shopping_list, &quot;\\b[a-z]{1,4}\\b&quot;)</code></pre>
-<pre><code>## [1] NA     &quot;bag&quot;  &quot;bag&quot;  &quot;milk&quot;</code></pre>
-<pre class="r"><code># Extract all matches
-str_extract_all(shopping_list, &quot;[a-z]+&quot;)</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;apples&quot; &quot;x&quot;     
+<div id="tidyr" class="section level1">
+<h1>tidyr</h1>
+<div id="complete" class="section level2">
+<h2>complete ()</h2>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
 ## 
-## [[2]]
-## [1] &quot;bag&quot;   &quot;of&quot;    &quot;flour&quot;
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
 ## 
-## [[3]]
-## [1] &quot;bag&quot;   &quot;of&quot;    &quot;sugar&quot;
-## 
-## [[4]]
-## [1] &quot;milk&quot; &quot;x&quot;</code></pre>
-<pre class="r"><code>str_extract_all(shopping_list, &quot;\\b[a-z]+\\b&quot;)</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;apples&quot;
-## 
-## [[2]]
-## [1] &quot;bag&quot;   &quot;of&quot;    &quot;flour&quot;
-## 
-## [[3]]
-## [1] &quot;bag&quot;   &quot;of&quot;    &quot;sugar&quot;
-## 
-## [[4]]
-## [1] &quot;milk&quot;</code></pre>
-<pre class="r"><code>str_extract_all(shopping_list, &quot;\\d&quot;)</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;4&quot;
-## 
-## [[2]]
-## character(0)
-## 
-## [[3]]
-## character(0)
-## 
-## [[4]]
-## [1] &quot;2&quot;</code></pre>
-<pre class="r"><code># Simplify results into character matrix
-str_extract_all(shopping_list, &quot;\\b[a-z]+\\b&quot;, simplify = TRUE)</code></pre>
-<pre><code>##      [,1]     [,2] [,3]   
-## [1,] &quot;apples&quot; &quot;&quot;   &quot;&quot;     
-## [2,] &quot;bag&quot;    &quot;of&quot; &quot;flour&quot;
-## [3,] &quot;bag&quot;    &quot;of&quot; &quot;sugar&quot;
-## [4,] &quot;milk&quot;   &quot;&quot;   &quot;&quot;</code></pre>
-<pre class="r"><code>str_extract_all(shopping_list, &quot;\\d&quot;, simplify = TRUE)</code></pre>
-<pre><code>##      [,1]
-## [1,] &quot;4&quot; 
-## [2,] &quot;&quot;  
-## [3,] &quot;&quot;  
-## [4,] &quot;2&quot;</code></pre>
-<pre class="r"><code># Extract all words
-str_extract_all(&quot;This is, suprisingly, a sentence.&quot;, boundary(&quot;word&quot;))</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;This&quot;        &quot;is&quot;          &quot;suprisingly&quot; &quot;a&quot;           &quot;sentence&quot;</code></pre>
-</div>
-<div id="str_extract_all" class="section level4">
-<h4>str_extract_all</h4>
-<p>str_extract_all(string, pattern, simplify = FALSE) Examples:</p>
-<pre class="r"><code>shopping_list &lt;- c(&quot;apples x4&quot;, &quot;bag of flour&quot;, &quot;bag of sugar&quot;, &quot;milk x2&quot;)
-
-str_extract(shopping_list, &quot;\\d&quot;)</code></pre>
-<pre><code>## [1] &quot;4&quot; NA  NA  &quot;2&quot;</code></pre>
-<pre class="r"><code>str_extract(shopping_list, &quot;[a-z]+&quot;)</code></pre>
-<pre><code>## [1] &quot;apples&quot; &quot;bag&quot;    &quot;bag&quot;    &quot;milk&quot;</code></pre>
-<pre class="r"><code>str_extract(shopping_list, &quot;[a-z]{1,4}&quot;)</code></pre>
-<pre><code>## [1] &quot;appl&quot; &quot;bag&quot;  &quot;bag&quot;  &quot;milk&quot;</code></pre>
-<pre class="r"><code>str_extract(shopping_list, &quot;\\b[a-z]{1,4}\\b&quot;)</code></pre>
-<pre><code>## [1] NA     &quot;bag&quot;  &quot;bag&quot;  &quot;milk&quot;</code></pre>
-<pre class="r"><code># Extract all matches
-str_extract_all(shopping_list, &quot;[a-z]+&quot;)</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;apples&quot; &quot;x&quot;     
-## 
-## [[2]]
-## [1] &quot;bag&quot;   &quot;of&quot;    &quot;flour&quot;
-## 
-## [[3]]
-## [1] &quot;bag&quot;   &quot;of&quot;    &quot;sugar&quot;
-## 
-## [[4]]
-## [1] &quot;milk&quot; &quot;x&quot;</code></pre>
-<pre class="r"><code>str_extract_all(shopping_list, &quot;\\b[a-z]+\\b&quot;)</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;apples&quot;
-## 
-## [[2]]
-## [1] &quot;bag&quot;   &quot;of&quot;    &quot;flour&quot;
-## 
-## [[3]]
-## [1] &quot;bag&quot;   &quot;of&quot;    &quot;sugar&quot;
-## 
-## [[4]]
-## [1] &quot;milk&quot;</code></pre>
-<pre class="r"><code>str_extract_all(shopping_list, &quot;\\d&quot;)</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;4&quot;
-## 
-## [[2]]
-## character(0)
-## 
-## [[3]]
-## character(0)
-## 
-## [[4]]
-## [1] &quot;2&quot;</code></pre>
-<pre class="r"><code>str_extract_all(shopping_list, &quot;\\b[a-z]+\\b&quot;, simplify = TRUE)</code></pre>
-<pre><code>##      [,1]     [,2] [,3]   
-## [1,] &quot;apples&quot; &quot;&quot;   &quot;&quot;     
-## [2,] &quot;bag&quot;    &quot;of&quot; &quot;flour&quot;
-## [3,] &quot;bag&quot;    &quot;of&quot; &quot;sugar&quot;
-## [4,] &quot;milk&quot;   &quot;&quot;   &quot;&quot;</code></pre>
-<pre class="r"><code>str_extract_all(shopping_list, &quot;\\d&quot;, simplify = TRUE)</code></pre>
-<pre><code>##      [,1]
-## [1,] &quot;4&quot; 
-## [2,] &quot;&quot;  
-## [3,] &quot;&quot;  
-## [4,] &quot;2&quot;</code></pre>
-<pre class="r"><code>str_extract_all(&quot;This is, suprisingly, a sentence.&quot;, boundary(&quot;word&quot;))</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;This&quot;        &quot;is&quot;          &quot;suprisingly&quot; &quot;a&quot;           &quot;sentence&quot;</code></pre>
-</div>
-</div>
-<div id="locate-the-position-of-patterns-in-a-string." class="section level3">
-<h3>Locate the position of patterns in a string.</h3>
-<div id="str_locatestring-pattern" class="section level4">
-<h4>str_locate(string, pattern)</h4>
-<p>For str_locate, an integer matrix. First column gives start postion of match, and second column gives end position. For str_locate_all a list of integer matrices.</p>
-<p>Vectorised over string and pattern. If the match is of length 0, (e.g. from a special match like $) end will be one character less than start.</p>
-<p>Examples str_locate and str_locate_all:</p>
-<pre class="r"><code>fruit &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;, &quot;pineapple&quot;)
-str_locate(fruit, &quot;$&quot;)</code></pre>
-<pre><code>##      start end
-## [1,]     6   5
-## [2,]     7   6
-## [3,]     5   4
-## [4,]    10   9</code></pre>
-<pre class="r"><code>str_locate(fruit, &quot;a&quot;)</code></pre>
-<pre><code>##      start end
-## [1,]     1   1
-## [2,]     2   2
-## [3,]     3   3
-## [4,]     5   5</code></pre>
-<pre class="r"><code>str_locate(fruit, &quot;e&quot;)</code></pre>
-<pre><code>##      start end
-## [1,]     5   5
-## [2,]    NA  NA
-## [3,]     2   2
-## [4,]     4   4</code></pre>
-<pre class="r"><code>str_locate(fruit, c(&quot;a&quot;, &quot;b&quot;, &quot;p&quot;, &quot;p&quot;))</code></pre>
-<pre><code>##      start end
-## [1,]     1   1
-## [2,]     1   1
-## [3,]     1   1
-## [4,]     1   1</code></pre>
-<pre class="r"><code>str_locate_all(fruit, &quot;a&quot;)</code></pre>
-<pre><code>## [[1]]
-##      start end
-## [1,]     1   1
-## 
-## [[2]]
-##      start end
-## [1,]     2   2
-## [2,]     4   4
-## [3,]     6   6
-## 
-## [[3]]
-##      start end
-## [1,]     3   3
-## 
-## [[4]]
-##      start end
-## [1,]     5   5</code></pre>
-<pre class="r"><code>str_locate_all(fruit, &quot;e&quot;)</code></pre>
-<pre><code>## [[1]]
-##      start end
-## [1,]     5   5
-## 
-## [[2]]
-##      start end
-## 
-## [[3]]
-##      start end
-## [1,]     2   2
-## 
-## [[4]]
-##      start end
-## [1,]     4   4
-## [2,]     9   9</code></pre>
-<pre class="r"><code># Find location of every character
-str_locate_all(fruit, &quot;&quot;)</code></pre>
-<pre><code>## [[1]]
-##      start end
-## [1,]     1   1
-## [2,]     2   2
-## [3,]     3   3
-## [4,]     4   4
-## [5,]     5   5
-## 
-## [[2]]
-##      start end
-## [1,]     1   1
-## [2,]     2   2
-## [3,]     3   3
-## [4,]     4   4
-## [5,]     5   5
-## [6,]     6   6
-## 
-## [[3]]
-##      start end
-## [1,]     1   1
-## [2,]     2   2
-## [3,]     3   3
-## [4,]     4   4
-## 
-## [[4]]
-##       start end
-##  [1,]     1   1
-##  [2,]     2   2
-##  [3,]     3   3
-##  [4,]     4   4
-##  [5,]     5   5
-##  [6,]     6   6
-##  [7,]     7   7
-##  [8,]     8   8
-##  [9,]     9   9</code></pre>
-</div>
-</div>
-<div id="extract-matched-groups-from-a-string." class="section level3">
-<h3>Extract matched groups from a string.</h3>
-<p>Vectorised over string and pattern. str_match(string, pattern) str_match_all(string, pattern)</p>
-<p>For str_match, a character matrix. First column is the complete match, followed by one column for each capture group. For str_match_all, a list of character matrices.</p>
-<p>Examples:</p>
-<pre class="r"><code>strings &lt;- c(&quot; 219 733 8965&quot;, &quot;329-293-8753 &quot;, &quot;banana&quot;, &quot;595 794 7569&quot;,
-  &quot;387 287 6718&quot;, &quot;apple&quot;, &quot;233.398.9187  &quot;, &quot;482 952 3315&quot;,
-  &quot;239 923 8115 and 842 566 4692&quot;, &quot;Work: 579-499-7527&quot;, &quot;$1000&quot;,
-  &quot;Home: 543.355.3679&quot;)
-phone &lt;- &quot;([2-9][0-9]{2})[- .]([0-9]{3})[- .]([0-9]{4})&quot;
-
-str_extract(strings, phone)</code></pre>
-<pre><code>##  [1] &quot;219 733 8965&quot; &quot;329-293-8753&quot; NA             &quot;595 794 7569&quot;
-##  [5] &quot;387 287 6718&quot; NA             &quot;233.398.9187&quot; &quot;482 952 3315&quot;
-##  [9] &quot;239 923 8115&quot; &quot;579-499-7527&quot; NA             &quot;543.355.3679&quot;</code></pre>
-<pre class="r"><code>str_match(strings, phone)</code></pre>
-<pre><code>##       [,1]           [,2]  [,3]  [,4]  
-##  [1,] &quot;219 733 8965&quot; &quot;219&quot; &quot;733&quot; &quot;8965&quot;
-##  [2,] &quot;329-293-8753&quot; &quot;329&quot; &quot;293&quot; &quot;8753&quot;
-##  [3,] NA             NA    NA    NA    
-##  [4,] &quot;595 794 7569&quot; &quot;595&quot; &quot;794&quot; &quot;7569&quot;
-##  [5,] &quot;387 287 6718&quot; &quot;387&quot; &quot;287&quot; &quot;6718&quot;
-##  [6,] NA             NA    NA    NA    
-##  [7,] &quot;233.398.9187&quot; &quot;233&quot; &quot;398&quot; &quot;9187&quot;
-##  [8,] &quot;482 952 3315&quot; &quot;482&quot; &quot;952&quot; &quot;3315&quot;
-##  [9,] &quot;239 923 8115&quot; &quot;239&quot; &quot;923&quot; &quot;8115&quot;
-## [10,] &quot;579-499-7527&quot; &quot;579&quot; &quot;499&quot; &quot;7527&quot;
-## [11,] NA             NA    NA    NA    
-## [12,] &quot;543.355.3679&quot; &quot;543&quot; &quot;355&quot; &quot;3679&quot;</code></pre>
-<pre class="r"><code># Extract/match all
-str_extract_all(strings, phone)</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;219 733 8965&quot;
-## 
-## [[2]]
-## [1] &quot;329-293-8753&quot;
-## 
-## [[3]]
-## character(0)
-## 
-## [[4]]
-## [1] &quot;595 794 7569&quot;
-## 
-## [[5]]
-## [1] &quot;387 287 6718&quot;
-## 
-## [[6]]
-## character(0)
-## 
-## [[7]]
-## [1] &quot;233.398.9187&quot;
-## 
-## [[8]]
-## [1] &quot;482 952 3315&quot;
-## 
-## [[9]]
-## [1] &quot;239 923 8115&quot; &quot;842 566 4692&quot;
-## 
-## [[10]]
-## [1] &quot;579-499-7527&quot;
-## 
-## [[11]]
-## character(0)
-## 
-## [[12]]
-## [1] &quot;543.355.3679&quot;</code></pre>
-<pre class="r"><code>str_match_all(strings, phone)</code></pre>
-<pre><code>## [[1]]
-##      [,1]           [,2]  [,3]  [,4]  
-## [1,] &quot;219 733 8965&quot; &quot;219&quot; &quot;733&quot; &quot;8965&quot;
-## 
-## [[2]]
-##      [,1]           [,2]  [,3]  [,4]  
-## [1,] &quot;329-293-8753&quot; &quot;329&quot; &quot;293&quot; &quot;8753&quot;
-## 
-## [[3]]
-##      [,1] [,2] [,3] [,4]
-## 
-## [[4]]
-##      [,1]           [,2]  [,3]  [,4]  
-## [1,] &quot;595 794 7569&quot; &quot;595&quot; &quot;794&quot; &quot;7569&quot;
-## 
-## [[5]]
-##      [,1]           [,2]  [,3]  [,4]  
-## [1,] &quot;387 287 6718&quot; &quot;387&quot; &quot;287&quot; &quot;6718&quot;
-## 
-## [[6]]
-##      [,1] [,2] [,3] [,4]
-## 
-## [[7]]
-##      [,1]           [,2]  [,3]  [,4]  
-## [1,] &quot;233.398.9187&quot; &quot;233&quot; &quot;398&quot; &quot;9187&quot;
-## 
-## [[8]]
-##      [,1]           [,2]  [,3]  [,4]  
-## [1,] &quot;482 952 3315&quot; &quot;482&quot; &quot;952&quot; &quot;3315&quot;
-## 
-## [[9]]
-##      [,1]           [,2]  [,3]  [,4]  
-## [1,] &quot;239 923 8115&quot; &quot;239&quot; &quot;923&quot; &quot;8115&quot;
-## [2,] &quot;842 566 4692&quot; &quot;842&quot; &quot;566&quot; &quot;4692&quot;
-## 
-## [[10]]
-##      [,1]           [,2]  [,3]  [,4]  
-## [1,] &quot;579-499-7527&quot; &quot;579&quot; &quot;499&quot; &quot;7527&quot;
-## 
-## [[11]]
-##      [,1] [,2] [,3] [,4]
-## 
-## [[12]]
-##      [,1]           [,2]  [,3]  [,4]  
-## [1,] &quot;543.355.3679&quot; &quot;543&quot; &quot;355&quot; &quot;3679&quot;</code></pre>
-<pre class="r"><code>x &lt;- c(&quot;&lt;a&gt; &lt;b&gt;&quot;, &quot;&lt;a&gt; &lt;&gt;&quot;, &quot;&lt;a&gt;&quot;, &quot;&quot;, NA)
-str_match(x, &quot;&lt;(.*?)&gt; &lt;(.*?)&gt;&quot;)</code></pre>
-<pre><code>##      [,1]      [,2] [,3]
-## [1,] &quot;&lt;a&gt; &lt;b&gt;&quot; &quot;a&quot;  &quot;b&quot; 
-## [2,] &quot;&lt;a&gt; &lt;&gt;&quot;  &quot;a&quot;  &quot;&quot;  
-## [3,] NA        NA   NA  
-## [4,] NA        NA   NA  
-## [5,] NA        NA   NA</code></pre>
-<pre class="r"><code>str_match_all(x, &quot;&lt;(.*?)&gt;&quot;)</code></pre>
-<pre><code>## [[1]]
-##      [,1]  [,2]
-## [1,] &quot;&lt;a&gt;&quot; &quot;a&quot; 
-## [2,] &quot;&lt;b&gt;&quot; &quot;b&quot; 
-## 
-## [[2]]
-##      [,1]  [,2]
-## [1,] &quot;&lt;a&gt;&quot; &quot;a&quot; 
-## [2,] &quot;&lt;&gt;&quot;  &quot;&quot;  
-## 
-## [[3]]
-##      [,1]  [,2]
-## [1,] &quot;&lt;a&gt;&quot; &quot;a&quot; 
-## 
-## [[4]]
-##      [,1] [,2]
-## 
-## [[5]]
-##      [,1] [,2]
-## [1,] NA   NA</code></pre>
-<pre class="r"><code>str_extract(x, &quot;&lt;.*?&gt;&quot;)</code></pre>
-<pre><code>## [1] &quot;&lt;a&gt;&quot; &quot;&lt;a&gt;&quot; &quot;&lt;a&gt;&quot; NA    NA</code></pre>
-<pre class="r"><code>str_extract_all(x, &quot;&lt;.*?&gt;&quot;)</code></pre>
-<pre><code>## [[1]]
-## [1] &quot;&lt;a&gt;&quot; &quot;&lt;b&gt;&quot;
-## 
-## [[2]]
-## [1] &quot;&lt;a&gt;&quot; &quot;&lt;&gt;&quot; 
-## 
-## [[3]]
-## [1] &quot;&lt;a&gt;&quot;
-## 
-## [[4]]
-## character(0)
-## 
-## [[5]]
-## [1] NA</code></pre>
-</div>
-<div id="str_to_upper" class="section level3">
-<h3>str_to_upper ()</h3>
-<p>str_to_upper (string) Convert case of a string.</p>
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 2.2.1     ✔ readr   1.1.1
+## ✔ tibble  1.4.2     ✔ purrr   0.2.4
+## ✔ tidyr   0.8.0     ✔ stringr 1.2.0
+## ✔ ggplot2 2.2.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(tidyr)
+library(knitr)
+library(kableExtra)</code></pre>
+<pre><code>## Warning: package 'kableExtra' was built under R version 3.4.4</code></pre>
+<p>Complete a data frame with missing combinations of data.</p>
+<p>Description:</p>
+<p>Turns implicit missing values into explicit missing values. This is a wrapper around expand(), dplyr::left_join() and replace_na() that’s useful for completing missing combinations of data.</p>
+<p>Usage:</p>
+<pre><code>complete(data, ..., fill = list())</code></pre>
 <p>Example:</p>
-<pre class="r"><code>exstring &lt;- &quot;the example string&quot;
-str_to_upper(exstring)</code></pre>
-<pre><code>## [1] &quot;THE EXAMPLE STRING&quot;</code></pre>
+<pre class="r"><code>df &lt;- tibble(
+  group = c(1:2, 1),
+  item_id = c(1:2, 2),
+  item_name = c(&quot;a&quot;, &quot;b&quot;, &quot;b&quot;),
+  value1 = 1:3,
+  value2 = 4:6
+)
+
+df %&gt;% complete(group, nesting(item_id, item_name))</code></pre>
+<pre><code>## # A tibble: 4 x 5
+##   group item_id item_name value1 value2
+##   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;      &lt;int&gt;  &lt;int&gt;
+## 1  1.00    1.00 a              1      4
+## 2  1.00    2.00 b              3      6
+## 3  2.00    1.00 a             NA     NA
+## 4  2.00    2.00 b              2      5</code></pre>
+<pre class="r"><code># You can also choose to fill in missing values
+df %&gt;% complete(group, nesting(item_id, item_name), fill = list(value1 = 0))</code></pre>
+<pre><code>## # A tibble: 4 x 5
+##   group item_id item_name value1 value2
+##   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;  &lt;int&gt;
+## 1  1.00    1.00 a           1.00      4
+## 2  1.00    2.00 b           3.00      6
+## 3  2.00    1.00 a           0        NA
+## 4  2.00    2.00 b           2.00      5</code></pre>
 </div>
-<div id="invert_match" class="section level2">
-<h2>invert_match ()</h2>
-<p>invert_match (string)</p>
-<p>Invert a matrix of match locations to match the opposite of what was previously matched.</p>
+<div id="drop_na" class="section level2">
+<h2>drop_na ()</h2>
+<p>Drop rows containing missing values</p>
+<p>Description:</p>
+<p>Drop rows containing missing values</p>
+<p>Usage:</p>
+<pre><code>drop_na(data, ...)</code></pre>
 <p>Example:</p>
-<pre class="r"><code>numbers &lt;- &quot;1 and 2 and 4 and 456&quot;
-num_loc &lt;- str_locate_all(numbers, &quot;[0-9]+&quot;)[[1]]
-str_sub(numbers, num_loc[, &quot;start&quot;], num_loc[, &quot;end&quot;])</code></pre>
-<pre><code>## [1] &quot;1&quot;   &quot;2&quot;   &quot;4&quot;   &quot;456&quot;</code></pre>
-<pre class="r"><code>text_loc &lt;- invert_match(num_loc)
-str_sub(numbers, text_loc[, &quot;start&quot;], text_loc[, &quot;end&quot;])</code></pre>
-<pre><code>## [1] &quot;&quot;      &quot; and &quot; &quot; and &quot; &quot; and &quot; &quot;&quot;</code></pre>
+<pre class="r"><code>df &lt;- tibble(x = c(1, 2, NA), y = c(&quot;a&quot;, NA, &quot;b&quot;))
+df %&gt;% drop_na()</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##       x y    
+##   &lt;dbl&gt; &lt;chr&gt;
+## 1  1.00 a</code></pre>
+<pre class="r"><code>df %&gt;% drop_na(x)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##       x y    
+##   &lt;dbl&gt; &lt;chr&gt;
+## 1  1.00 a    
+## 2  2.00 &lt;NA&gt;</code></pre>
 </div>
-<div id="modifiers" class="section level2">
-<h2>modifiers ()</h2>
+<div id="expand" class="section level2">
+<h2>expand ()</h2>
+<p>Expand data frame to include all combinations of values</p>
+<p>Description:</p>
+<p>expand() is often useful in conjunction with left_join if you want to convert implicit missing values to explicit missing values. Or you can use it in conjunction with anti_join() to figure out which combinations are missing.</p>
+<p>Usage:</p>
+<pre><code>expand(data, ...)</code></pre>
+<p>Example:</p>
+<pre class="r"><code># All possible combinations of vs &amp; cyl, even those that aren't
+# present in the data
+expand(mtcars, vs, cyl)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##      vs   cyl
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1  0     4.00
+## 2  0     6.00
+## 3  0     8.00
+## 4  1.00  4.00
+## 5  1.00  6.00
+## 6  1.00  8.00</code></pre>
 </div>
-<div id="stringr-data" class="section level2">
-<h2>stringr-data ()</h2>
+<div id="extract" class="section level2">
+<h2>extract ()</h2>
+<p>Extract one column into multiple columns.</p>
+<p>Description:</p>
+<p>Given a regular expression with capturing groups, extract() turns each group into a new column. If the groups don’t match, or the input is NA, the output will be NA.</p>
+<p>Usage:</p>
+<pre><code>extract(data, col, into, regex = &quot;([[:alnum:]]+)&quot;, remove = TRUE,
+  convert = FALSE, ...)</code></pre>
+<p>Example:</p>
+<pre class="r"><code>df &lt;- data.frame(x = c(NA, &quot;a-b&quot;, &quot;a-d&quot;, &quot;b-c&quot;, &quot;d-e&quot;))
+df %&gt;% extract(x, &quot;A&quot;)</code></pre>
+<pre><code>##      A
+## 1 &lt;NA&gt;
+## 2    a
+## 3    a
+## 4    b
+## 5    d</code></pre>
+<pre class="r"><code>df %&gt;% extract(x, c(&quot;A&quot;, &quot;B&quot;), &quot;([[:alnum:]]+)-([[:alnum:]]+)&quot;)</code></pre>
+<pre><code>##      A    B
+## 1 &lt;NA&gt; &lt;NA&gt;
+## 2    a    b
+## 3    a    d
+## 4    b    c
+## 5    d    e</code></pre>
 </div>
-<div id="str_c" class="section level2">
-<h2>str_c ()</h2>
+<div id="fill" class="section level2">
+<h2>fill ()</h2>
+<p>Fill in missing values.</p>
+<p>Description:</p>
+<p>Fills missing values in using the previous entry. This is useful in the common output format where values are not repeated, they’re recorded each time they change.</p>
+<p>Usage:</p>
+<pre><code> fill(data, ..., .direction = c(&quot;down&quot;, &quot;up&quot;))</code></pre>
+<p>Example:</p>
+<pre class="r"><code>df &lt;- data.frame(Month = 1:12, Year = c(2000, rep(NA, 11)))
+df %&gt;% fill(Year)  </code></pre>
+<pre><code>##    Month Year
+## 1      1 2000
+## 2      2 2000
+## 3      3 2000
+## 4      4 2000
+## 5      5 2000
+## 6      6 2000
+## 7      7 2000
+## 8      8 2000
+## 9      9 2000
+## 10    10 2000
+## 11    11 2000
+## 12    12 2000</code></pre>
 </div>
-<div id="str_conv" class="section level2">
-<h2>str_conv ()</h2>
-<p>str_conv(string, encoding)</p>
-<p>This is a convenient way to override the current encoding of a string.</p>
-<pre class="r"><code>x &lt;- rawToChar(as.raw(177))
-x</code></pre>
-<pre><code>## [1] &quot;\xb1&quot;</code></pre>
-<pre class="r"><code>str_conv(x, &quot;ISO-8859-2&quot;)</code></pre>
-<pre><code>## [1] &quot;ą&quot;</code></pre>
-<pre class="r"><code>str_conv(x, &quot;ISO-8859-1&quot;)</code></pre>
-<pre><code>## [1] &quot;±&quot;</code></pre>
+<div id="full_seq" class="section level2">
+<h2>full_seq ()</h2>
 </div>
-<div id="str_count-1" class="section level2">
-<h2>str_count ()</h2>
-<p>str_count(string, pattern = “”)</p>
-<p>Count The Number Of Matches In A String.</p>
-<p>Example:-</p>
-<pre class="r"><code>fruit &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;, &quot;pineapple&quot;)
-str_count(fruit, &quot;a&quot;)</code></pre>
-<pre><code>## [1] 1 3 1 1</code></pre>
-<pre class="r"><code>str_count(fruit, &quot;p&quot;)</code></pre>
-<pre><code>## [1] 2 0 1 3</code></pre>
-<pre class="r"><code>str_count(fruit, &quot;e&quot;)</code></pre>
-<pre><code>## [1] 1 0 1 2</code></pre>
-<pre class="r"><code>str_count(fruit, c(&quot;a&quot;, &quot;b&quot;, &quot;p&quot;, &quot;p&quot;))</code></pre>
-<pre><code>## [1] 1 1 1 3</code></pre>
+<div id="gather" class="section level2">
+<h2>gather ()</h2>
+<p>Gather columns into key-value pairs.</p>
+<p>Description:</p>
+<p>Gather takes multiple columns and collapses into key-value pairs, duplicating all other columns as needed. You use gather() when you notice that you have columns that are not variables.</p>
+<p>Usage:</p>
+<pre><code>gather(data, key = &quot;key&quot;, value = &quot;value&quot;, ..., na.rm = FALSE,
+  convert = FALSE, factor_key = FALSE)</code></pre>
+<p>Example:</p>
+<pre class="r"><code># From http://stackoverflow.com/questions/1181060
+stocks &lt;- tibble(
+  time = as.Date('2009-01-01') + 0:9,
+  X = rnorm(10, 0, 1),
+  Y = rnorm(10, 0, 2),
+  Z = rnorm(10, 0, 4))
+gather(stocks, stock, price, -time)</code></pre>
+<pre><code>## # A tibble: 30 x 3
+##    time       stock   price
+##    &lt;date&gt;     &lt;chr&gt;   &lt;dbl&gt;
+##  1 2009-01-01 X     -1.02  
+##  2 2009-01-02 X      0.665 
+##  3 2009-01-03 X      0.0545
+##  4 2009-01-04 X     -1.56  
+##  5 2009-01-05 X     -0.292 
+##  6 2009-01-06 X     -0.747 
+##  7 2009-01-07 X     -0.283 
+##  8 2009-01-08 X      0.435 
+##  9 2009-01-09 X      0.621 
+## 10 2009-01-10 X     -0.597 
+## # ... with 20 more rows</code></pre>
+<pre class="r"><code>stocks %&gt;% gather(stock, price, -time)</code></pre>
+<pre><code>## # A tibble: 30 x 3
+##    time       stock   price
+##    &lt;date&gt;     &lt;chr&gt;   &lt;dbl&gt;
+##  1 2009-01-01 X     -1.02  
+##  2 2009-01-02 X      0.665 
+##  3 2009-01-03 X      0.0545
+##  4 2009-01-04 X     -1.56  
+##  5 2009-01-05 X     -0.292 
+##  6 2009-01-06 X     -0.747 
+##  7 2009-01-07 X     -0.283 
+##  8 2009-01-08 X      0.435 
+##  9 2009-01-09 X      0.621 
+## 10 2009-01-10 X     -0.597 
+## # ... with 20 more rows</code></pre>
 </div>
-<div id="str_dup" class="section level2">
-<h2>str_dup ()</h2>
-<p>str_dup(string, times)</p>
-<p>Duplicate And Concatenate Strings Within A Character Vector.</p>
-<p>Example:-</p>
-<pre class="r"><code>fruit &lt;- c(&quot;apple&quot;, &quot;pear&quot;, &quot;banana&quot;)
-str_dup(fruit, 2)</code></pre>
-<pre><code>## [1] &quot;appleapple&quot;   &quot;pearpear&quot;     &quot;bananabanana&quot;</code></pre>
-<pre class="r"><code>str_dup(fruit, 1:3)</code></pre>
-<pre><code>## [1] &quot;apple&quot;              &quot;pearpear&quot;           &quot;bananabananabanana&quot;</code></pre>
-<pre class="r"><code>str_c(&quot;ba&quot;, str_dup(&quot;na&quot;, 0:5))</code></pre>
-<pre><code>## [1] &quot;ba&quot;           &quot;bana&quot;         &quot;banana&quot;       &quot;bananana&quot;    
-## [5] &quot;banananana&quot;   &quot;bananananana&quot;</code></pre>
+<div id="nest" class="section level2">
+<h2>nest ()</h2>
+<p>Nest repeated values in a list-variable.</p>
+<p>Description:</p>
+<p>There are many possible ways one could choose to nest columns inside a data frame. nest() creates a list of data frames containing all the nested variables: this seems to be the most useful form in practice.</p>
+<p>Usage:</p>
+<pre><code> nest(data, ..., .key = &quot;data&quot;)</code></pre>
+<p>Example:</p>
+<pre class="r"><code>as_tibble(iris) %&gt;% nest(-Species)</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   Species    data             
+##   &lt;fct&gt;      &lt;list&gt;           
+## 1 setosa     &lt;tibble [50 × 4]&gt;
+## 2 versicolor &lt;tibble [50 × 4]&gt;
+## 3 virginica  &lt;tibble [50 × 4]&gt;</code></pre>
+<pre class="r"><code>as_tibble(chickwts) %&gt;% nest(weight)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   feed      data             
+##   &lt;fct&gt;     &lt;list&gt;           
+## 1 horsebean &lt;tibble [10 × 1]&gt;
+## 2 linseed   &lt;tibble [12 × 1]&gt;
+## 3 soybean   &lt;tibble [14 × 1]&gt;
+## 4 sunflower &lt;tibble [12 × 1]&gt;
+## 5 meatmeal  &lt;tibble [11 × 1]&gt;
+## 6 casein    &lt;tibble [12 × 1]&gt;</code></pre>
+<pre class="r"><code>if (require(&quot;gapminder&quot;)) {
+  gapminder %&gt;%
+    group_by(country, continent) %&gt;%
+    nest()
+  gapminder %&gt;%
+    nest(-country, -continent)
+}     </code></pre>
+<pre><code>## Loading required package: gapminder</code></pre>
+<pre><code>## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
+## logical.return = TRUE, : there is no package called 'gapminder'</code></pre>
 </div>
-<div id="str_flatten" class="section level2">
-<h2>str_flatten ()</h2>
-<p>str_flatten(string, collapse = “”)</p>
-<p>Flatten a string</p>
-<p>Example:-</p>
-<pre class="r"><code>str_flatten(letters)</code></pre>
-<pre><code>## [1] &quot;abcdefghijklmnopqrstuvwxyz&quot;</code></pre>
-<pre class="r"><code>str_flatten(letters, &quot;-&quot;)</code></pre>
-<pre><code>## [1] &quot;a-b-c-d-e-f-g-h-i-j-k-l-m-n-o-p-q-r-s-t-u-v-w-x-y-z&quot;</code></pre>
+<div id="replace_na" class="section level2">
+<h2>replace_na ()</h2>
+<p>Replace missing values</p>
+<p>Description:</p>
+<p>Replace missing values</p>
+<p>Usage:</p>
+<pre><code> replace_na(data, replace, ...)</code></pre>
+<p>Example:</p>
+<pre class="r"><code>df &lt;- tibble(x = c(1, 2, NA), y = c(&quot;a&quot;, NA, &quot;b&quot;), z = list(1:5, NULL, 10:20))
+df %&gt;% replace_na(list(x = 0, y = &quot;unknown&quot;))</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##       x y       z         
+##   &lt;dbl&gt; &lt;chr&gt;   &lt;list&gt;    
+## 1  1.00 a       &lt;int [5]&gt; 
+## 2  2.00 unknown &lt;NULL&gt;    
+## 3  0    b       &lt;int [11]&gt;</code></pre>
+<pre class="r"><code># NULL are the list-col equivalent of NAs
+df %&gt;% replace_na(list(z = list(5)))</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##       x y     z         
+##   &lt;dbl&gt; &lt;chr&gt; &lt;list&gt;    
+## 1  1.00 a     &lt;int [5]&gt; 
+## 2  2.00 &lt;NA&gt;  &lt;dbl [1]&gt; 
+## 3 NA    b     &lt;int [11]&gt;</code></pre>
+<pre class="r"><code>df$x %&gt;% replace_na(0)</code></pre>
+<pre><code>## [1] 1 2 0</code></pre>
+<pre class="r"><code>df$y %&gt;% replace_na(&quot;unknown&quot;)</code></pre>
+<pre><code>## [1] &quot;a&quot;       &quot;unknown&quot; &quot;b&quot;</code></pre>
 </div>
-<div id="str_glue" class="section level2">
-<h2>str_glue ()</h2>
-<p>str_glue(…, .sep = “”, .envir = parent.frame())</p>
-<p>These functions are wrappers around glue::glue() and glue::glue_data(), which provide a powerful and elegant syntax for interpolating strings. These wrappers provide a small set of the full options. Use the functions directly from glue for more control.</p>
-<p>Example:-</p>
-<pre class="r"><code>name &lt;- &quot;Fred&quot;
-age &lt;- 50
-anniversary &lt;- as.Date(&quot;1991-10-12&quot;)
-str_glue(
-  &quot;My name is {name}, &quot;,
-  &quot;my age next year is {age + 1}, &quot;,
-  &quot;and my anniversary is {format(anniversary, '%A, %B %d, %Y')}.&quot;
-)</code></pre>
-<pre><code>## My name is Fred, my age next year is 51, and my anniversary is Saturday, October 12, 1991.</code></pre>
+<div id="separate" class="section level2">
+<h2>separate ()</h2>
+<p>Separate one column into multiple columns.</p>
+<p>Description:</p>
+<p>Given either regular expression or a vector of character positions, separate() turns a single char- acter column into multiple columns.</p>
+<p>Usage:</p>
+<pre><code> separate(data, col, into, sep = &quot;[^[:alnum:]]+&quot;, remove = TRUE,
+  convert = FALSE, extra = &quot;warn&quot;, fill = &quot;warn&quot;, ...)</code></pre>
+<p>Example:</p>
+<pre class="r"><code>df &lt;- data.frame(x = c(NA, &quot;a.b&quot;, &quot;a.d&quot;, &quot;b.c&quot;))
+df %&gt;% separate(x, c(&quot;A&quot;, &quot;B&quot;))</code></pre>
+<pre><code>##      A    B
+## 1 &lt;NA&gt; &lt;NA&gt;
+## 2    a    b
+## 3    a    d
+## 4    b    c</code></pre>
+<pre class="r"><code># If every row doesn't split into the same number of pieces, use
+# the extra and file arguments to control what happens
+df &lt;- data.frame(x = c(&quot;a&quot;, &quot;a b&quot;, &quot;a b c&quot;, NA))
+df %&gt;% separate(x, c(&quot;a&quot;, &quot;b&quot;))</code></pre>
+<pre><code>## Warning: Expected 2 pieces. Additional pieces discarded in 1 rows [3].</code></pre>
+<pre><code>## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 1 rows [1].</code></pre>
+<pre><code>##      a    b
+## 1    a &lt;NA&gt;
+## 2    a    b
+## 3    a    b
+## 4 &lt;NA&gt; &lt;NA&gt;</code></pre>
+<pre class="r"><code># The same behaviour but no warnings
+df %&gt;% separate(x, c(&quot;a&quot;, &quot;b&quot;), extra = &quot;drop&quot;, fill = &quot;right&quot;)</code></pre>
+<pre><code>##      a    b
+## 1    a &lt;NA&gt;
+## 2    a    b
+## 3    a    b
+## 4 &lt;NA&gt; &lt;NA&gt;</code></pre>
+<pre class="r"><code># Another option:
+df %&gt;% separate(x, c(&quot;a&quot;, &quot;b&quot;), extra = &quot;merge&quot;, fill = &quot;left&quot;)</code></pre>
+<pre><code>##      a    b
+## 1 &lt;NA&gt;    a
+## 2    a    b
+## 3    a  b c
+## 4 &lt;NA&gt; &lt;NA&gt;</code></pre>
+<pre class="r"><code># If only want to split specified number of times use extra = &quot;merge&quot;
+df &lt;- data.frame(x = c(&quot;x: 123&quot;, &quot;y: error: 7&quot;))
+df %&gt;% separate(x, c(&quot;key&quot;, &quot;value&quot;), &quot;: &quot;, extra = &quot;merge&quot;)</code></pre>
+<pre><code>##   key    value
+## 1   x      123
+## 2   y error: 7</code></pre>
 </div>
-<div id="str_length" class="section level2">
-<h2>str_length ()</h2>
-<p>str_length(string)</p>
-<p>Returns The Length Of A String.</p>
-<p>Example:-</p>
-<pre class="r"><code>str_length(c(&quot;i&quot;, &quot;like&quot;, &quot;Ice Cream&quot;, NA))</code></pre>
-<pre><code>## [1]  1  4  9 NA</code></pre>
+<div id="separate_rows" class="section level2">
+<h2>separate_rows ()</h2>
+<p>Separate a collapse/delimited column into multiple rows.</p>
+<p>Description:</p>
+<p>If a variable contains observations with multiple delimited values, this separates the values and places each one in its own row.</p>
+<p>Usage:</p>
+<pre><code> separate_rows(data, ..., sep = &quot;[^[:alnum:].]+&quot;, convert = FALSE)</code></pre>
+<p>Example:</p>
+<pre class="r"><code>test_sep_rows &lt;- data.frame(
+  x = c(1, 2, 3, 4),
+  y = c(&quot;a/b&quot;, &quot;c&quot;, &quot;d/e/f&quot;, &quot;g&quot;),
+  z = c(&quot;1/2&quot;, &quot;1&quot;, &quot;1/2/3&quot;, &quot;2&quot;),
+  stringsAsFactors = FALSE
+)
+separate_rows(test_sep_rows, y, z, convert = TRUE)</code></pre>
+<pre><code>##   x y z
+## 1 1 a 1
+## 2 1 b 2
+## 3 2 c 1
+## 4 3 d 1
+## 5 3 e 2
+## 6 3 f 3
+## 7 4 g 2</code></pre>
+<p>Since convert = TRUE was specified, the values in column z were converted to numeric:</p>
+<pre class="r"><code>str(test_sep_rows$z)</code></pre>
+<pre><code>##  chr [1:4] &quot;1/2&quot; &quot;1&quot; &quot;1/2/3&quot; &quot;2&quot;</code></pre>
+<pre class="r"><code>test_sep_rows &lt;- separate_rows(test_sep_rows, y, z, convert = TRUE)
+
+str(test_sep_rows$z)</code></pre>
+<pre><code>##  int [1:7] 1 2 1 1 2 3 2</code></pre>
+<p>Note: The following will return an error since the first value in column a has three values and the third value only has one.</p>
+<pre class="r"><code>test_sep_rows &lt;- data.frame(
+  x = c(1, 2, 3, 4),
+  y = c(&quot;a/b&quot;, &quot;c&quot;, &quot;d/e/f&quot;, &quot;g&quot;),
+  z = c(&quot;1/2&quot;, &quot;1&quot;, &quot;1/2/3&quot;, &quot;2&quot;),
+  a = c(&quot;1/2/3&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;),
+  stringsAsFactors = FALSE
+)
+# Would result in an error
+# separate_rows(df, y, z, a, convert = TRUE)</code></pre>
+<p>Finally, when no “sep” parameter is specified, only the first separator is operated on and the second is ignored.</p>
+<pre class="r"><code>test_sep_rows &lt;- data.frame(
+  x = c(1, 2),
+  y = c(&quot;a.b/x&quot;, &quot;c&quot;),
+  z = c(&quot;1.2/9&quot;, &quot;1&quot;),
+  stringsAsFactors = FALSE
+)
+separate_rows(test_sep_rows, y, z, convert = TRUE)</code></pre>
+<pre><code>##   x   y   z
+## 1 1 a.b 1.2
+## 2 1   x 9.0
+## 3 2   c 1.0</code></pre>
+<pre class="r"><code>test_sep_rows &lt;- data.frame(
+  x = c(1, 2),
+  y = c(&quot;a/b.x&quot;, &quot;c&quot;),
+  z = c(&quot;1/2.9&quot;, &quot;1&quot;),
+  stringsAsFactors = FALSE
+)
+separate_rows(test_sep_rows, y, z, convert = TRUE)</code></pre>
+<pre><code>##   x   y   z
+## 1 1   a 1.0
+## 2 1 b.x 2.9
+## 3 2   c 1.0</code></pre>
+<p>However, the second operator can be specified directly.</p>
+<pre class="r"><code>test_sep_rows &lt;- data.frame(
+  x = c(1, 2),
+  y = c(&quot;a/b.x&quot;, &quot;c&quot;),
+  z = c(&quot;1/2.9&quot;, &quot;1&quot;),
+  stringsAsFactors = FALSE
+)
+separate_rows(test_sep_rows, y, z, sep = &quot;\\.&quot;, convert = TRUE)</code></pre>
+<pre><code>##   x   y   z
+## 1 1 a/b 1/2
+## 2 1   x   9
+## 3 2   c   1</code></pre>
 </div>
-<div id="str_locate" class="section level2">
-<h2>str_locate ()</h2>
+<div id="smiths" class="section level2">
+<h2>smiths ()</h2>
 </div>
-<div id="str_match" class="section level2">
-<h2>str_match ()</h2>
+<div id="spread" class="section level2">
+<h2>spread ()</h2>
+<p>Take a tidy key-value pairs and spread them across multiple columns.</p>
+<p>Description:</p>
+<p>The antithesis of gather, spread() unstacks or unpivots tables by spreading rows into columns.</p>
+<p>Usage:</p>
+<p>spread(data, key, value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)</p>
+<p>Example:</p>
+<pre class="r"><code>alcohol.data &lt;- read_csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv')</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   country = col_character(),
+##   beer_servings = col_integer(),
+##   spirit_servings = col_integer(),
+##   wine_servings = col_integer(),
+##   total_litres_of_pure_alcohol = col_double()
+## )</code></pre>
+<pre class="r"><code>alcohol.data %&gt;% head() %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">country</th>
+<th align="right">beer_servings</th>
+<th align="right">spirit_servings</th>
+<th align="right">wine_servings</th>
+<th align="right">total_litres_of_pure_alcohol</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Afghanistan</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="left">Albania</td>
+<td align="right">89</td>
+<td align="right">132</td>
+<td align="right">54</td>
+<td align="right">4.9</td>
+</tr>
+<tr class="odd">
+<td align="left">Algeria</td>
+<td align="right">25</td>
+<td align="right">0</td>
+<td align="right">14</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="left">Andorra</td>
+<td align="right">245</td>
+<td align="right">138</td>
+<td align="right">312</td>
+<td align="right">12.4</td>
+</tr>
+<tr class="odd">
+<td align="left">Angola</td>
+<td align="right">217</td>
+<td align="right">57</td>
+<td align="right">45</td>
+<td align="right">5.9</td>
+</tr>
+<tr class="even">
+<td align="left">Antigua &amp; Barbuda</td>
+<td align="right">102</td>
+<td align="right">128</td>
+<td align="right">45</td>
+<td align="right">4.9</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># While gather() &quot;pivots&quot; the data table so that each observation forms a row...
+alc.gather &lt;- alcohol.data %&gt;% gather(&quot;type&quot;, &quot;amount&quot;, 2:5)
+alc.gather %&gt;% head() %&gt;% kable()                        </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">country</th>
+<th align="left">type</th>
+<th align="right">amount</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Afghanistan</td>
+<td align="left">beer_servings</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Albania</td>
+<td align="left">beer_servings</td>
+<td align="right">89</td>
+</tr>
+<tr class="odd">
+<td align="left">Algeria</td>
+<td align="left">beer_servings</td>
+<td align="right">25</td>
+</tr>
+<tr class="even">
+<td align="left">Andorra</td>
+<td align="left">beer_servings</td>
+<td align="right">245</td>
+</tr>
+<tr class="odd">
+<td align="left">Angola</td>
+<td align="left">beer_servings</td>
+<td align="right">217</td>
+</tr>
+<tr class="even">
+<td align="left">Antigua &amp; Barbuda</td>
+<td align="left">beer_servings</td>
+<td align="right">102</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># ...spread() performs the opposite operation, widening the data table.
+alc.spread &lt;- alc.gather %&gt;% spread(type, amount)
+alc.spread %&gt;% head() %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">country</th>
+<th align="right">beer_servings</th>
+<th align="right">spirit_servings</th>
+<th align="right">total_litres_of_pure_alcohol</th>
+<th align="right">wine_servings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Afghanistan</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Albania</td>
+<td align="right">89</td>
+<td align="right">132</td>
+<td align="right">4.9</td>
+<td align="right">54</td>
+</tr>
+<tr class="odd">
+<td align="left">Algeria</td>
+<td align="right">25</td>
+<td align="right">0</td>
+<td align="right">0.7</td>
+<td align="right">14</td>
+</tr>
+<tr class="even">
+<td align="left">Andorra</td>
+<td align="right">245</td>
+<td align="right">138</td>
+<td align="right">12.4</td>
+<td align="right">312</td>
+</tr>
+<tr class="odd">
+<td align="left">Angola</td>
+<td align="right">217</td>
+<td align="right">57</td>
+<td align="right">5.9</td>
+<td align="right">45</td>
+</tr>
+<tr class="even">
+<td align="left">Antigua &amp; Barbuda</td>
+<td align="right">102</td>
+<td align="right">128</td>
+<td align="right">4.9</td>
+<td align="right">45</td>
+</tr>
+<tr class="odd">
+<td align="left">## table1 ()</td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="str_order" class="section level2">
-<h2>str_order ()</h2>
+<div id="uncount" class="section level2">
+<h2>uncount ()</h2>
 </div>
-<div id="str_pad" class="section level2">
-<h2>str_pad ()</h2>
+<div id="unite" class="section level2">
+<h2>unite ()</h2>
+<p>Description: joins multiple columns together by concatenation and seperates values by a seperator</p>
+<p>Usage:unite(data, col,…, sep = “_“, remove = TRUE)</p>
+<p>data = Dataframe</p>
+<p>col = Desired name of new column can be an unquoted string</p>
+<p>… = A list of columns to Unite</p>
+<p>sep = How to seperate the united vlaues</p>
+<p>Example: Use unite function to create Member index in Congress_age DF. Member will be a concatination of firstname and last name columns with a &quot; &quot; as a seperator</p>
+<pre class="r"><code>Congress_Age &lt;- read_csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/congress-age/congress-terms.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   congress = col_integer(),
+##   chamber = col_character(),
+##   bioguide = col_character(),
+##   firstname = col_character(),
+##   middlename = col_character(),
+##   lastname = col_character(),
+##   suffix = col_character(),
+##   birthday = col_date(format = &quot;&quot;),
+##   state = col_character(),
+##   party = col_character(),
+##   incumbent = col_character(),
+##   termstart = col_date(format = &quot;&quot;),
+##   age = col_double()
+## )</code></pre>
+<pre class="r"><code>  Congress_Age &lt;- Congress_Age %&gt;%
+      unite(.,Member,c(firstname,lastname),sep=&quot; &quot;)
+
+## print for confirmation
+  kable(head(Congress_Age$Member),caption=&quot;New Member column&quot;)</code></pre>
+<table>
+<caption>New Member column</caption>
+<thead>
+<tr class="header">
+<th align="left">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joseph Mansfield</td>
+</tr>
+<tr class="even">
+<td align="left">Robert Doughton</td>
+</tr>
+<tr class="odd">
+<td align="left">Adolph Sabath</td>
+</tr>
+<tr class="even">
+<td align="left">Charles Eaton</td>
+</tr>
+<tr class="odd">
+<td align="left">William Lewis</td>
+</tr>
+<tr class="even">
+<td align="left">James Gallagher</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="str_remove" class="section level2">
-<h2>str_remove ()</h2>
+<div id="unnest" class="section level2">
+<h2>unnest ()</h2>
 </div>
-<div id="str_replace" class="section level2">
-<h2>str_replace ()</h2>
-</div>
-<div id="str_replace_na" class="section level2">
-<h2>str_replace_na ()</h2>
-</div>
-<div id="str_split" class="section level2">
-<h2>str_split ()</h2>
-</div>
-<div id="str_sub" class="section level2">
-<h2>str_sub ()</h2>
-</div>
-<div id="str_subset" class="section level2">
-<h2>str_subset ()</h2>
-</div>
-<div id="str_trim" class="section level2">
-<h2>str_trim ()</h2>
-</div>
-<div id="str_trunc" class="section level2">
-<h2>str_trunc ()</h2>
-</div>
-<div id="str_view" class="section level2">
-<h2>str_view ()</h2>
-</div>
-<div id="str_wrap" class="section level2">
-<h2>str_wrap ()</h2>
-</div>
-<div id="word" class="section level2">
-<h2>word ()</h2>
+<div id="who" class="section level2">
+<h2>who ()</h2>
 </div>
 </div>
 

@@ -4,31 +4,34 @@
 
 ## aes ()
 #Data from the National Morbidity and Mortality Air Pollution Study (NMMAPS)
-
 rm(list=ls())
 
-```{r warning=FALSE, message=FALSE}
+```{r}
 library(ggplot2)
-library(tidyr)
-library(dplyr)
+library(ggthemes)
+library(grid)
 library(tidyverse)
 library(ggiraph)
 library(fueleconomy)
-library(grid)
-library(ggthemes)
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+myurl<-("https://raw.githubusercontent.com/VioletaStoyanova/Untidy_data/master/chicago-nmmaps.csv")
 
 #limiting the data from 1997-2000
-myurl<-("https://raw.githubusercontent.com/VioletaStoyanova/Untidy_data/master/chicago-nmmaps.csv")
 data<-read.csv(myurl, as.is = TRUE)
-
 data$date<-as.Date(data$date)
 data<-data[data$date>as.Date("1996-12-31"),]
 data$year<-substring(data$date,1,4)
 
 head(data)
+```
 
 #For reference: http://rpubs.com/violet/Data607-rbookdown
 
+```{r}
 g<- ggplot(data,aes(date, temp)) + geom_point(color="firebrick")
 g
 ```
@@ -65,8 +68,7 @@ g
 #A geom_violin + coord_flip()
 
 ```{r}
-g+geom_violin(alpha=0.5,color="gray")+geom_jitter(alpha=0.5,aes(color=season),
-position=position_jitter(width=0.1))+coord_flip()
+g+geom_violin(alpha=0.5,color="gray")+geom_jitter(alpha=0.5,aes(color=season), position=position_jitter(width=0.1))+coord_flip()
 ```
 
 ## coord_map ()
@@ -85,7 +87,72 @@ position=position_jitter(width=0.1))+coord_flip()
 
 ## facet_grid ()
 
+facet_grid forms a matrix of panels defined by row and column faceting variables.
+It is most useful when you have two discrete variables and all combinations of the variables exist in the data.
+
+The data can be split up by one or two variables that vary on the horizontal and/or vertical direction.
+The form is vertical~horizontal.
+
+```{r}
+ggplot(data, aes(year, temp)) +
+  geom_boxplot() +
+  facet_grid(season~.) #season in the vertical direction
+```
+
+```{r}
+ggplot(data, aes(year, temp)) +
+  geom_boxplot() +
+  facet_grid(~season) #season in the horizontal direction
+```
+
 ## facet_wrap ()
+
+facet_wrap warps a 1d sequence of panels into 2d.
+This is generally a better use of screen space than facet_grid because most displays are roughly rectangular.
+
+```{r}
+ggplot(data, aes(year, temp)) +
+  geom_boxplot() +
+  facet_wrap(season~.)
+```
+
+```{r}
+ggplot(data, aes(year, temp)) +
+  geom_boxplot() +
+  facet_wrap(~season)
+```
+
+```{r}
+ggplot(data, aes(year, temp)) +
+  geom_boxplot() +
+  facet_wrap(~season)
+```
+
+It is possible to modifty facet label appearance.
+
+```{r}
+ggplot(data, aes(year, temp)) +
+  geom_boxplot() +
+  facet_wrap(~season) +
+  theme(strip.text.x = element_text(size=8, angle=0),
+        strip.text.y = element_text(size=12, face="bold"),
+        strip.background = element_rect(colour="blue", fill="#CCCCFF"))
+```
+
+To change the label text, we can provide named vector that maps original names to new names.
+
+```{r}
+labels <- c(spring = "season: spring", summer = "season: summer", autumn = "season:autumn", winter = "season:winter")
+
+ggplot(data, aes(year, temp)) +
+  geom_boxplot() +
+  facet_wrap(~season,
+             labeller = labeller(season = labels)) +
+  theme(strip.text.x = element_text(size=8, angle=0),
+        strip.text.y = element_text(size=12, face="bold"),
+        strip.background = element_rect(colour="blue", fill="#CCCCFF"))
+```
+
 
 ## faithfuld ()
 
@@ -163,8 +230,7 @@ ggplot(mtcars, aes(mpg, hp)) +
 ## geom_violin ()
 
 ```{r}
-g+geom_violin(alpha=0.5,color="gray")+geom_jitter(alpha=0.5,aes(color=season),
-position=position_jitter(width=0.1))+coord_flip()
+g+geom_violin(alpha=0.5,color="gray")+geom_jitter(alpha=0.5,aes(color=season), position=position_jitter(width=0.1))+coord_flip()
 ```
 
 ## ggplot ()
@@ -200,6 +266,7 @@ ggplot(data,aes(date,temp,color=factor(season)))+
 ```{r}
 g+labs(title='Temperature')
 g
+
 #or g<‐g+ggtitle('Temperature')
 #g
 ```
@@ -398,9 +465,10 @@ Using "colour" instead of "fill" probably isn't what we want for a barplot. But 
 ## textgrob()
 
 ```{r}
-my_grob <- grobTree(textGrob("This text stays in place!",x=0.1, y=0.95,hjust=0, gp=gpar(col="blue",fontsize=15,fontface="italic")))
-
-ggplot(data,aes(temp,o3))+geom_point(color="firebrick") + annotation_custom(my_grob)
+my_grob=grobTree(textGrob("This text stays in place!",x=0.1, y=0.95,hjust=0,
+gp=gpar(col="blue",fontsize=15,fontface="italic")))
+ggplot(data,aes(temp,o3))+geom_point(color="firebrick")+
+annotation_custom(my_grob)
 ```
 
 ## ggiraph
@@ -431,7 +499,6 @@ data_id: column of dataset that contains id to be associated with elements
 The ggiraph function is called using library(ggiraph).
 
 Tooltips Tooltips can be created using the following example:
-
 
 ```{r eval=FALSE}
 # Need to debug and get rid of eval=FALSE above once working
@@ -480,7 +547,7 @@ our.plot
 
 * Align axis labels, change background color and remove background grid
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 our.plot<-our.plot+ theme(panel.background = element_rect(fill = '#ffa3a3'),panel.grid.major = element_blank(),panel.grid.minor = element_blank()) +
    theme(axis.text.x=element_text(size=10, angle=70,hjust=0.55,vjust=.7))+
    theme(axis.title.x=element_text(hjust=.99,vjust=.2))+theme(axis.title.y=element_text(hjust=1,1,vjust=-.1))

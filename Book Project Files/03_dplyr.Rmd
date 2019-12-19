@@ -1,18 +1,22 @@
-```{r, include=FALSE}
-library(tidyverse)
-library(knitr)
-```
-
 # dplyr {#dplyr}
 
-dplyr provides a grammar of data manipulation, providing a consistent set of verbs that solve the most common data manipulation challenges. 
+dplyr provides a grammar of data manipulation, providing a consistent set of verbs that solve the most common data manipulation challenges.
 
 ## select()
 
 The select function provides options for selecting only certain columns of data to work with.
 
 ```{r, warning=FALSE, message=FALSE}
-alcohol.data <- read_csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv') 
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+library(dplyr)
+library(sparklyr)
+```
+
+```{r}
+alcohol.data <- read_csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv')
 alcohol.data %>% head() %>% kable()
 ```
 
@@ -45,6 +49,8 @@ There are a number of additional functions that can be used to select columns ba
 * ```ends_with()``` which selects all columns that end with the given text
 * ```contains()``` which selects all columns that contain the given text anywhere
 * ```matches()``` which selects all columns that match the given regular expression. See regular expressions for more details.
+* ```num_range("x", 1:5)``` which selects the variables named x01, x02, x03, x04 and x05
+* ```one_of(x)``` which selects every name that appears in x, which should be a character vector.
 
 Finally, a dash (-) may be added to the beginning of any of these functions to select all columns that do NOT match.
 
@@ -55,7 +61,7 @@ alcohol.data %>%
   kable()
 ```
 
-The select function can also be used to rearrange the columns in a data frame. 
+The select function can also be used to rearrange the columns in a data frame.
 
 ```{r}
 alcohol.data %>%
@@ -88,7 +94,7 @@ The rename function is used to alter the names of columns. Any columns not speci
 
 ```{r}
 alcohol.data %>%
-  rename(beer=beer_servings, spirit=spirit_servings, wine=wine_servings) %>% 
+  rename(beer=beer_servings, spirit=spirit_servings, wine=wine_servings) %>%
   head() %>%
   kable()
 ```
@@ -122,20 +128,19 @@ avengers.data %>%
 ```
 
 There are numerous comparison options that can be used with filter. These include: ```==, >, >=, <, <=, !=```
-The use of a single ampersand ```&``` is used to indicate 'and' while a single pipe ```|``` is used to indicate 'or'. 
+The use of a single ampersand ```&``` is used to indicate 'and' while a single pipe ```|``` is used to indicate 'or'.
 The exclamation point ```!``` is used to indicate 'nor' (see next example) and ```xor()``` is the exclusive or.
 
 Filtering can also be based on whether an element is NA.
 
-This data set does not have any NAs, but rather has empty strings in cases where the variable does not apply. 
+This data set does not have any NAs, but rather has empty strings in cases where the variable does not apply.
 
 To demonstrate the technique of filtering out NAs, let's convert these empty strings to NAs.
 
 Then, use the filter function to select cases where the variable is non-NA.
 
-```{r eval=FALSE}
-# Need to debug and get rid of eval=FALSE above once working
-avengers.data_incl_NAs <- avengers.data
+```{r}
+avengers.data_incl_NAs <- data.frame(avengers.data,check.names=FALSE)
 var <- "Probationary Introl"
 avengers.data_incl_NAs[,var] <- plyr::mapvalues(avengers.data_incl_NAs[,var],
   from = "",to=NA)
@@ -187,17 +192,150 @@ nrow(high_appearance_females_or_low_appearance_males)
 There are 10 high appearance females and 65 low appearance males. Thus, the fact that we get 75 results for the query using OR operator makes sense, as the criteria we looked for using the OR operator are mutually exclusive.
 
 ## arrange()
+
 arrange changes the natural column order of the data frame. It takes data frame
 name and the column name(s) as input and re arranges the columns based on input.
 
 
 ## mutate() and transmute()
 
+The mutate function creates new columns which can be added to a copy of the dataset.  You can also add new columns to your existing dataset by overwriting it like this:
+
+```{r}
+alcohol.data <- mutate(alcohol.data, total_servings = beer_servings + spirit_servings + wine_servings)
+```
+
+You can use any mathematical operator (+, -, *, /) as well as functions like:
+
+- log()
+- lead(), lag()
+- dense_rank(), min_rank(), percent_rank(), row_number(), cume_dist(), ntile()
+- cumsum(), cummean(), cummin(), cummax(), cumany(), cumall()
+- na_if(), coalesce()
+- if_else(), recode(), case_when()
+
+```{r}
+# Rank into 5 "buckets" by displacement
+mtcars <- mutate(mtcars, rank = ntile(disp, 5))
+```
+
+Transmute does the same thing as mutate, but drops all the other columns not specified in your function arguments.
+
+```{r}
+transmute(alcohol.data, country, total_servings = beer_servings + spirit_servings + wine_servings)
+```
+
+Other example of transmute is following.
+
+```{r}
+transmute(iris,
+            sepal_by_petal_l = Sepal.Length/Petal.Length,
+            sepal_by_petal_w = Sepal.Width/Petal.Width
+            )
+```
 
 ## summarise()
 
+The summarise function returns a table of summary statistics that you specify by running functions on your data.  You name each statistic and then specify what function to use and separate additional statistics with commas like this:
+
+```{r}
+summarise(mtcars, avg_disp = mean(disp), max_disp = max(disp), min_disp = min(disp), median_disp = median(disp))
+```
+
+In addition to all the usual summary statistic functions in R, summarise comes with some additional functions that you can use:
+
+* ```first()```  - returns the first value
+* ```last``` - returns the last value
+* ```nth``` - returns the nth value
+* ```n``` - returns the number of rows
+* ```n_distinct``` - returns the number of unique values
+
+```{r}
+summarise(mtcars, first = first(disp), last = last(disp), fifth = nth(disp, 5), n = n(), unique = n_distinct(disp))
+```
 
 ## sample_n() and sample_frac()
 
+`sample_n` and `sample_frac` return random samples from your data.  `sample_n` will select the number of rows you specify in the second argument at random. `sample_frac` returns a random sample fraction of rows.  You specify the fraction of rows you want returned in your second function argument with a decimal number from 0 to 1.  Both functions can be set to sample with or without replacement using the `replace = TRUE/FALSE` argument.  
 
-## scored operations
+```{r}
+sample_n(mtcars, 5, replace = TRUE)
+```
+
+```{r}
+sample_frac(mtcars, 0.25, replace = FALSE)
+```
+
+## sparklyr
+
++ Connect to Spark from R. The sparklyr package provides a complete dplyr backend.
++ Filter and aggregate Spark datasets then bring them into R for analysis and visualization.
+
+### Installation of sparklyr and Spark on local machine
+
+If you want to run the code chunks below to install and run the sparklyr demo, remove the "eval=FALSE" argument from the chunk settings.
+
+Also note:  You need to have the latest [Java SE Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html) installed to run this code.
+
+```{r eval=FALSE}
+install.packages("sparklyr")
+```
+
+In order to get the latest sparklyr
+
+```{r eval=FALSE}
+devtools::install_github("rstudio/sparklyr")
+```
+
+#### _Install a local version of Spark for development purposes_
+
+```{r eval=FALSE}
+spark_install(version = '2.2.0')
+```
+
+#### Connecting to Spark
+
+#### _Set up the Spark Home directory_
+
+You need to set the SPARK_HOME to the path where you downloaded spark from previous line.  
+
+For Mac OS it will be something like: "/Users/USERNAME/spark/spark-2.2.0-bin-hadoop2.7".  
+
+For Windows it will be similar to the path in the code below.
+
+```{r eval=FALSE}
+Sys.setenv(SPARK_HOME="C:\\Users\\USERNAME\\AppData\\Local\\spark\\spark-2.2.0-bin-hadoop2.7")
+sc <- spark_connect(master = "local")
+```
+
+#### _Using dplyr and copy datasets from R into the local Spark Cluster_
+
+```{r eval=FALSE}
+#install.packages("nycflights13")
+
+iris_tbl <- copy_to(sc, iris)
+flights_tbl <- copy_to(sc, nycflights13::flights, "flights")
+src_tbls(sc)
+```
+
+### _Using filter()_  
+
+```{r eval=FALSE}
+flights_tbl %>% filter(dep_delay == 2)
+```
+
+### *group_by(), summarise() and collect()*
+
+```{r eval=FALSE}
+delay <- flights_tbl %>%
+  group_by(tailnum) %>%
+  summarise(count = n(), dist = mean(distance), delay = mean(arr_delay)) %>%
+  filter(count > 20, dist < 2000, !is.na(delay)) %>%
+  collect
+
+# plot delays
+ggplot(delay, aes(dist, delay)) +
+  geom_point(aes(size = count), alpha = 1/2) +
+  geom_smooth() +
+  scale_size_area(max_size = 2)
+```
